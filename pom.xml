@@ -12,10 +12,10 @@
   </parent>
 
   <groupId>io.luminara</groupId>
-  <artifactId>REPLACE_ME_APP_NAME</artifactId>
+  <artifactId>test-vertx-web</artifactId>
   <version>0.0.1</version>
 
-  <name>Luminara - EC - REPLACE_ME_APP_NAME</name>
+  <name>Luminara - EC - test-vertx-web</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
