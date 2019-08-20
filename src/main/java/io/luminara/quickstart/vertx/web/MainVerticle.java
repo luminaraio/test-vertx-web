@@ -31,7 +31,7 @@ public class MainVerticle extends AbstractVerticle {
         startFuture.fail(config.cause());
       } else {
         // Deploy Http Verticle
-        vertx.deployVerticle(HttpVerticle.class.getName(),
+        vertx.deployVerticle(new HttpVerticle(discovery),
           new DeploymentOptions()
             .setConfig(config.result()));
       }

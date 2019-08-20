@@ -8,6 +8,8 @@ import io.vertx.ext.web.codec.BodyCodec;
 import io.vertx.junit5.Timeout;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
+import io.vertx.servicediscovery.ServiceDiscovery;
+import io.vertx.servicediscovery.ServiceDiscoveryOptions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +35,10 @@ public class HttpVerticleTest {
         .put("host", "localhost")
         .put("port", 8080));
 
-    vertx.deployVerticle(new HttpVerticle(), new DeploymentOptions().setConfig(config),
+    ServiceDiscovery discovery = ServiceDiscovery.create(
+      vertx, new ServiceDiscoveryOptions().setBackendConfiguration(config));
+
+    vertx.deployVerticle(new HttpVerticle(discovery), new DeploymentOptions().setConfig(config),
       testContext.succeeding(id -> testContext.completeNow()));
   }
 

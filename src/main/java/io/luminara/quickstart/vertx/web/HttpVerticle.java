@@ -2,6 +2,7 @@ package io.luminara.quickstart.vertx.web;
 
 import io.luminara.quickstart.vertx.web.handlers.ErrorHandler;
 import io.luminara.quickstart.vertx.web.handlers.HealthCheckHandler;
+import io.luminara.quickstart.vertx.web.handlers.HelloHandler;
 import io.luminara.quickstart.vertx.web.handlers.ResourceNotFoundHandler;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.AbstractVerticle;
@@ -14,12 +15,18 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CorsHandler;
+import io.vertx.servicediscovery.ServiceDiscovery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class HttpVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HttpVerticle.class);
+  private final ServiceDiscovery discovery;
+
+  public HttpVerticle(ServiceDiscovery discovery) {
+    this.discovery = discovery;
+  }
 
   @Override
   public void start(Promise<Void> startFuture) {
@@ -41,6 +48,7 @@ public class HttpVerticle extends AbstractVerticle {
     // Mount Handlers
     router.mountSubRouter("/", rootRouter(vertx));
     router.mountSubRouter("/health", healthRouter(vertx));
+    router.mountSubRouter("/hello", helloRouter(vertx, HelloHandler.create(vertx, discovery)));
 
     // ResourceNotFoundHandler and Failurehandler
     router.route()
@@ -98,5 +106,15 @@ public class HttpVerticle extends AbstractVerticle {
       .putHeader(HttpHeaders.CONTENT_TYPE, MediaTypes.APPLICATION_JSON)
       .setStatusCode(HttpResponseStatus.OK.code())
       .end(response.encode());
+  }
+
+  private Router helloRouter(Vertx vertx, HelloHandler helloHandler) {
+    Router router = Router.router(vertx);
+
+    router.get("/")
+      .handler(helloHandler::handleSayHello)
+      .failureHandler(new ErrorHandler());
+
+    return router;
   }
 }

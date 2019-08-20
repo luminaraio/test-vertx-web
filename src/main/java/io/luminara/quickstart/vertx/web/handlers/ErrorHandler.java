@@ -15,6 +15,13 @@ import java.time.format.DateTimeFormatter;
 public class ErrorHandler implements Handler<RoutingContext> {
   private static final Logger LOGGER = LoggerFactory.getLogger(ErrorHandler.class);
 
+  public static void error(RoutingContext routingContext, int code, String message) {
+    LOGGER.debug("In ErrorHandler.error(..) => gRPC: code: {}, message: {}", code, message);
+    routingContext
+      .put("message", message)
+      .fail(code);
+  }
+
   @Override
   public void handle(RoutingContext routingContext) {
     LOGGER.trace("In ErrorHandler.handle(..)");
@@ -29,4 +36,5 @@ public class ErrorHandler implements Handler<RoutingContext> {
       .setStatusCode(HttpResponseStatus.BAD_REQUEST.code())
       .end(problemJson.encode());
   }
+
 }
