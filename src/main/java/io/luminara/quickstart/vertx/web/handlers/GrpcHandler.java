@@ -40,7 +40,10 @@ public interface GrpcHandler {
               " ( Filter =" + serviceFilter + ") In the service registry"));
         } else {
           Record record = ar.result();
-
+          LOGGER.info("Found gRPC service in the service discovery backend. " +
+            "\nRecord details: " +
+            "\nname: {} " +
+            "\nlocation: {}", record.getName(), record.getLocation());
           ManagedChannel vertxChannel = VertxChannelBuilder
             .forAddress(vertx, record.getLocation().getString("host"),
               record.getLocation().getInteger("port"))

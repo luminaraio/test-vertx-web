@@ -111,7 +111,7 @@ public class HttpVerticle extends AbstractVerticle {
   private Router helloRouter(Vertx vertx, HelloHandler helloHandler) {
     Router router = Router.router(vertx);
 
-    router.get("/")
+    router.post("/")
       .handler(helloHandler::handleSayHello)
       .failureHandler(new ErrorHandler());
 

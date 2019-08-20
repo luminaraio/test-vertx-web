@@ -16,20 +16,24 @@ import io.vertx.servicediscovery.kubernetes.KubernetesServiceImporter;
 public class MainVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MainVerticle.class);
-  protected ServiceDiscovery discovery;
+  private ServiceDiscovery discovery;
   private ConfigRetriever configRetriever;
 
   @Override
   public void start(Promise<Void> startFuture) throws Exception {
     LOGGER.debug("MainVerticle.start(..)");
-
     configRetriever();
     configRetriever.getConfig(config -> {
       if (config.failed()) {
         startFuture.fail(config.cause());
       } else {
-        discovery = ServiceDiscovery.create(vertx, new ServiceDiscoveryOptions().setBackendConfiguration(config.result()));
-        discovery.registerServiceImporter(new KubernetesServiceImporter(), new JsonObject());
+        discovery = ServiceDiscovery.create(vertx);
+
+        if (config.result().containsKey("KUBERNETES_NAMESPACE")) {
+          discovery.registerServiceImporter(new KubernetesServiceImporter(), new JsonObject());
+        } else {
+          System.setProperty("vertx-service-discovery-backend-local", "true");
+        }
 
         // Deploy Http Verticle
         vertx.deployVerticle(new HttpVerticle(discovery),
@@ -40,6 +44,9 @@ public class MainVerticle extends AbstractVerticle {
   }
 
   private void configRetriever() {
+    ConfigStoreOptions environmentStore = new ConfigStoreOptions()
+      .setType("env");
+
     ConfigStoreOptions yamlStore = new ConfigStoreOptions()
       .setType("file")
       .setFormat("yaml")
@@ -48,6 +55,7 @@ public class MainVerticle extends AbstractVerticle {
 
     configRetriever = ConfigRetriever.create(vertx,
       new ConfigRetrieverOptions()
+        .addStore(environmentStore)
         .addStore(yamlStore));
   }
 }
