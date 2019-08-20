@@ -11,6 +11,7 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.servicediscovery.ServiceDiscovery;
 import io.vertx.servicediscovery.ServiceDiscoveryOptions;
+import io.vertx.servicediscovery.kubernetes.KubernetesServiceImporter;
 
 public class MainVerticle extends AbstractVerticle {
 
@@ -22,14 +23,14 @@ public class MainVerticle extends AbstractVerticle {
   public void start(Promise<Void> startFuture) throws Exception {
     LOGGER.debug("MainVerticle.start(..)");
 
-    discovery = ServiceDiscovery.create(
-      vertx, new ServiceDiscoveryOptions().setBackendConfiguration(config()));
-
     configRetriever();
     configRetriever.getConfig(config -> {
       if (config.failed()) {
         startFuture.fail(config.cause());
       } else {
+        discovery = ServiceDiscovery.create(vertx, new ServiceDiscoveryOptions().setBackendConfiguration(config.result()));
+        discovery.registerServiceImporter(new KubernetesServiceImporter(), new JsonObject());
+
         // Deploy Http Verticle
         vertx.deployVerticle(new HttpVerticle(discovery),
           new DeploymentOptions()
