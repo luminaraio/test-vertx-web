@@ -23,7 +23,7 @@
     <main.verticle>com.efficientcapital.quickstart.vertx.web.MainVerticle</main.verticle>
 
     <ec-commons.version>0.0.1</ec-commons.version>
-    <ec-vertx-commons.version>0.0.1</ec-vertx-commons.version>
+    <ec-commons-vertx.version>0.0.1</ec-commons-vertx.version>
   </properties>
 
   <dependencies>
@@ -35,13 +35,13 @@
     </dependency>
     <dependency>
       <groupId>com.efficientcapital</groupId>
-      <artifactId>ec-vertx-commons</artifactId>
-      <version>${ec-vertx-commons.version}</version>
+      <artifactId>ec-commons-vertx</artifactId>
+      <version>${ec-commons-vertx.version}</version>
     </dependency>
     <dependency>
       <groupId>com.efficientcapital.test-vertx-grpc</groupId>
       <artifactId>api</artifactId>
-      <version>0.0.1</version>
+      <version>0.0.1-SNAPSHOT</version>
     </dependency>
 
     <!-- Vert.x Web -->
