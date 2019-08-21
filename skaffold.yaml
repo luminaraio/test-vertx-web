@@ -2,9 +2,9 @@ apiVersion: skaffold/v1beta2
 kind: Config
 build:
   artifacts:
-  - image: devopstk26/test-vertx-web
-    context: .
-    docker: {}
+    - image: devopstk26/test-vertx-web
+      context: .
+      docker: {}
   tagPolicy:
     envTemplate:
       template: '{{.DOCKER_REGISTRY}}/{{.IMAGE_NAME}}:{{.VERSION}}'
@@ -12,17 +12,17 @@ build:
 deploy:
   kubectl: {}
 profiles:
-- name: dev
-  build:
-    tagPolicy:
-      envTemplate:
-        template: '{{.DOCKER_REGISTRY}}/{{.IMAGE_NAME}}:{{.DIGEST_HEX}}'
-    local: {}
-  deploy:
-    helm:
-      releases:
-      - name: test-vertx-web
-        chartPath: charts/test-vertx-web
-        setValueTemplates:
-          image.repository: '{{.DOCKER_REGISTRY}}/{{.IMAGE_NAME}}'
-          image.tag: '{{.DIGEST_HEX}}'
+  - name: dev
+    build:
+      tagPolicy:
+        envTemplate:
+          template: '{{.DOCKER_REGISTRY}}/{{.IMAGE_NAME}}:{{.DIGEST_HEX}}'
+      local: {}
+    deploy:
+      helm:
+        releases:
+          - name: test-vertx-web
+            chartPath: charts/test-vertx-web
+            setValueTemplates:
+              image.repository: '{{.DOCKER_REGISTRY}}/{{.IMAGE_NAME}}'
+              image.tag: '{{.DIGEST_HEX}}'

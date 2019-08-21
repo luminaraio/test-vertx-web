@@ -1,9 +1,10 @@
-package io.luminara.quickstart.vertx.web.handlers;
+package com.efficientcapital.quickstart.vertx.web;
 
-import io.luminara.quickstart.vertx.GreeterGrpc;
-import io.luminara.quickstart.vertx.HelloReply;
-import io.luminara.quickstart.vertx.HelloRequest;
-import io.luminara.quickstart.vertx.web.MediaTypes;
+import com.efficientcapital.commons.http.response.MediaTypes;
+import com.efficientcapital.commons.vertx.handler.grpc.GrpcHandler;
+import com.efficientcapital.quickstart.vertx.GreeterGrpc;
+import com.efficientcapital.quickstart.vertx.HelloReply;
+import com.efficientcapital.quickstart.vertx.HelloRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Vertx;
@@ -13,8 +14,6 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.servicediscovery.ServiceDiscovery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 
 /**
  * Created by Luminara Team.
@@ -39,20 +38,23 @@ public class HelloHandler implements GrpcHandler {
   }
 
   public void handleSayHello(RoutingContext routingContext) {
-    LOGGER.trace("In HelloHandler.handleSayHello(..)");
+    LOGGER.debug("In HelloHandler.handleSayHello(..)");
     getStub(vertx, discovery, serviceFilter, GreeterGrpc::newVertxStub,
       proxyAsyncResult -> sayHello(routingContext, proxyAsyncResult));
   }
 
   private void sayHello(RoutingContext routingContext, AsyncResult<GreeterGrpc.GreeterVertxStub> proxyAsyncResult) {
+    LOGGER.debug("In HelloHandler.sayHello(..)");
     if (proxyAsyncResult.succeeded()) {
+      LOGGER.debug("In HelloHandler.sayHello(..) => getting proxy service");
       GreeterGrpc.GreeterVertxStub service = proxyAsyncResult.result();
+      LOGGER.debug("In HelloHandler.sayHello(..) => retrieved proxy service");
       JsonObject payload = routingContext.getBodyAsJson();
-      HelloRequest request =
-        HelloRequest.newBuilder()
-          .setName(payload.getString("name"))
-          .build();
-      service.sayHello(request, serviceResult ->
+      LOGGER.debug("In HelloHandler.sayHello(..) => read request payload");
+      LOGGER.debug("In HelloHandler.sayHello(..) => build gRPC request");
+      service.sayHello(HelloRequest.newBuilder()
+        .setName(payload.getString("name"))
+        .build(), serviceResult ->
         processServiceResponse(routingContext, HttpResponseStatus.OK, serviceResult));
     } else {
       LOGGER.error("ERROR while proxying request", proxyAsyncResult.cause());
@@ -62,11 +64,12 @@ public class HelloHandler implements GrpcHandler {
 
   private void processServiceResponse(RoutingContext routingContext, HttpResponseStatus httpStatus,
                                       AsyncResult<HelloReply> serviceResult) {
+    LOGGER.debug("In HelloHandler.processServiceResponse(..)");
     if (serviceResult.succeeded()) {
       routingContext
         .response()
         .putHeader(HttpHeaders.CONTENT_TYPE, MediaTypes.APPLICATION_JSON)
-        .setStatusCode(OK.code())
+        .setStatusCode(httpStatus.code())
         .end(new JsonObject().put("message", serviceResult.result().getMessage()).encode());
     } else {
       processServiceError(routingContext, serviceResult);

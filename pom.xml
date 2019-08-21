@@ -6,29 +6,40 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>io.luminara</groupId>
+    <groupId>com.efficientcapital</groupId>
     <artifactId>ec-vertx-parent</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.1</version>
   </parent>
 
-  <groupId>io.luminara</groupId>
+  <groupId>com.efficientcapital</groupId>
   <artifactId>test-vertx-web</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.1-SNAPSHOT</version>
 
-  <name>Luminara - EC - test-vertx-web</name>
+  <name>Efficient Capital - test-vertx-web</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <main.verticle>io.luminara.quickstart.vertx.web.MainVerticle</main.verticle>
+    <main.verticle>com.efficientcapital.quickstart.vertx.web.MainVerticle</main.verticle>
 
-    <!-- Luminara - EC - dependencies-->
+    <ec-commons.version>0.0.1</ec-commons.version>
+    <ec-vertx-commons.version>0.0.1</ec-vertx-commons.version>
   </properties>
 
   <dependencies>
-    <!-- Luminara dependencies -->
+    <!-- Efficient Capital dependencies -->
     <dependency>
-      <groupId>io.luminara.test-vertx-grpc</groupId>
+      <groupId>com.efficientcapital</groupId>
+      <artifactId>ec-commons</artifactId>
+      <version>${ec-commons.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.efficientcapital</groupId>
+      <artifactId>ec-vertx-commons</artifactId>
+      <version>${ec-vertx-commons.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.efficientcapital.test-vertx-grpc</groupId>
       <artifactId>api</artifactId>
       <version>0.0.1</version>
     </dependency>

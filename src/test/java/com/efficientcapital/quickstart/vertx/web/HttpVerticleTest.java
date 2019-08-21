@@ -1,4 +1,4 @@
-package io.luminara.quickstart.vertx.web;
+package com.efficientcapital.quickstart.vertx.web;
 
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;

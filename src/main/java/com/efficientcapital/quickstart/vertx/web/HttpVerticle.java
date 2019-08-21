@@ -1,9 +1,9 @@
-package io.luminara.quickstart.vertx.web;
+package com.efficientcapital.quickstart.vertx.web;
 
-import io.luminara.quickstart.vertx.web.handlers.ErrorHandler;
-import io.luminara.quickstart.vertx.web.handlers.HealthCheckHandler;
-import io.luminara.quickstart.vertx.web.handlers.HelloHandler;
-import io.luminara.quickstart.vertx.web.handlers.ResourceNotFoundHandler;
+import com.efficientcapital.commons.http.response.MediaTypes;
+import com.efficientcapital.commons.vertx.handler.http.ErrorHandler;
+import com.efficientcapital.commons.vertx.handler.http.HealthCheckHandler;
+import com.efficientcapital.commons.vertx.handler.http.ResourceNotFoundHandler;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
